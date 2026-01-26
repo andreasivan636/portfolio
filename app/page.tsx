@@ -28,14 +28,15 @@ const projects = [
   },
 ];
 
-// --- SKILLS (Update sesuai persona baru) ---
+// --- SKILLS (Gabungan Terbaik: Modern + Data) ---
 const skills = [
   "Next.js",
   "Tailwind CSS",
   "Framer Motion",
+  "Python Flask",
+  "SQL / MySQL",     // <-- Penting buat anak SI (Data)
   "Graphic Design",
-  "AI Prompting",
-  "Python Flask"
+  "AI Prompting"
 ];
 
 export default function Home() {
