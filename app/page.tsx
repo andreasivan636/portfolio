@@ -20,11 +20,11 @@ const projects = [
     tag: "Frontend",
   },
   {
-    title: "Sistem Login Flask",
-    desc: "Backend auth system menggunakan Python Flask dan SQLAlchemy.",
-    img: "/loginui.jpg",
-    link: "https://github.com/dreas30/SQLAlchemy-Login",
-    tag: "Backend",
+    title: "Sistem Laporan Warga",
+    desc: "Aplikasi Fullstack CRUD untuk pelaporan warga. Sudah mencakup Login System aman & Database.",
+    img: "/laporan.jpg",
+    link: "https://github.com/andreasivan636/laporan-warga-surabaya", // <--- PASTE DI SINI
+    tag: "Fullstack",
   },
 ];
 
