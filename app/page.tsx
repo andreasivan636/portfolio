@@ -8,8 +8,8 @@ const projects = [
   {
     title: "Redesign Fore Coffee",
     desc: "Landing page scrollytelling mewah dengan animasi Framer Motion & Next.js.",
-    img: "/fore.jpg", // Nanti kalau sudah ada fotonya, otomatis muncul
-    link: "#",
+    img: "/fore.jpg",
+    link: "https://fore-redesign.vercel.app", // <--- GANTI JADI INI
     tag: "Creative Dev",
   },
   {
