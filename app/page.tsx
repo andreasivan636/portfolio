@@ -26,6 +26,13 @@ const projects = [
     link: "https://github.com/andreasivan636/laporan-warga-surabaya", // <--- PASTE DI SINI
     tag: "Fullstack",
   },
+  {
+    title: "iPhone 13 3D Website",
+    desc: "Web showcase interaktif dengan animasi 3D yang halus dan performa tinggi.",
+    img: "/iphone.jpg", // <--- Pastikan nama file fotonya sama
+    link: "https://iphone13-showcase.vercel.app",
+    tag: "3D Experience",
+  },
 ];
 
 // --- SKILLS (Gabungan Terbaik: Modern + Data) ---
