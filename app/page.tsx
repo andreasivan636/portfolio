@@ -33,6 +33,13 @@ const projects = [
     link: "https://iphone13-showcase.vercel.app",
     tag: "3D Experience",
   },
+  {
+    title: "Ascendia Creative",
+    desc: "Platform jasa pembuatan website digital profesional untuk membantu branding UMKM.",
+    img: "/ascendia.jpg", // <--- Pastikan nama file fotonya sama
+    link: "https://ascendiacreative.vercel.app",
+    tag: "Business",
+  },
 ];
 
 // --- SKILLS (Gabungan Terbaik: Modern + Data) ---
