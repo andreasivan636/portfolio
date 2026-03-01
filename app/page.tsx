@@ -15,8 +15,7 @@ import {
   IconMail,
 } from "@tabler/icons-react";
 
-// --- DATA GAMBAR UNTUK 3D MARQUEE ---
-const marqueeImages = Array(30).fill([
+const marqueeImages = Array(10).fill([
   "/fore.jpg",
   "/logocupangndasmu.jpg",
   "/laporan.jpg",

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+
 export const ThreeDMarquee = ({
     images,
     className,
@@ -15,10 +16,12 @@ export const ThreeDMarquee = ({
         const start = colIndex * chunkSize;
         return images.slice(start, start + chunkSize);
     });
+
     return (
         <div
             className={cn(
-                "mx-auto block h-[600px] overflow-hidden rounded-2xl max-sm:h-100",
+                // MANTRA DITAMBAHKAN DI SINI: "hidden md:block" menggantikan "block" biasa
+                "mx-auto hidden md:block h-[600px] overflow-hidden rounded-2xl max-sm:h-100",
                 className,
             )}
         >
