@@ -3,8 +3,11 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { FloatingDock } from "@/components/ui/floating-dock";
-import { HeroParallax } from "@/components/ui/hero-parallax";
 import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
+// Import mesin 3D Marquee (Visual)
+import { ThreeDMarquee } from "@/components/ui/3d-marquee";
+// Import mesin Expandable Cards (Detail)
+import { ExpandableCardDemo } from "@/components/ui/expandable-cards";
 import {
   IconHome,
   IconBriefcase,
@@ -12,49 +15,22 @@ import {
   IconMail,
 } from "@tabler/icons-react";
 
-// --- DATA PROYEK UNTUK PARALLAX ---
-const parallaxProducts = [
-  { title: "Redesign Fore Coffee", link: "https://fore-redesign.vercel.app", thumbnail: "/fore.jpg" },
-  { title: "Cupang Ndasmu", link: "https://dreas30.github.io/Produk-Cupang-Ndasmu/", thumbnail: "/logocupangndasmu.jpg" },
-  { title: "Laporan Warga", link: "https://github.com/andreasivan636/laporan-warga-surabaya", thumbnail: "/laporan.jpg" },
-  { title: "iPhone 13 3D", link: "https://iphone13-showcase.vercel.app", thumbnail: "/iphone.jpg" },
-  { title: "Ascendia Creative", link: "https://ascendiacreative.vercel.app", thumbnail: "/ascendia.jpg" },
-  // Duplicate 1
-  { title: "Laporan Warga Backend", link: "https://github.com/andreasivan636/laporan-warga-surabaya", thumbnail: "/laporan.jpg" },
-  { title: "Fore Coffee Scrollytelling", link: "https://fore-redesign.vercel.app", thumbnail: "/fore.jpg" },
-  { title: "iPhone 13 Showcase", link: "https://iphone13-showcase.vercel.app", thumbnail: "/iphone.jpg" },
-  { title: "Ascendia Digital", link: "https://ascendiacreative.vercel.app", thumbnail: "/ascendia.jpg" },
-  { title: "Cupang Ndasmu Web", link: "https://dreas30.github.io/Produk-Cupang-Ndasmu/", thumbnail: "/logocupangndasmu.jpg" },
-  // Duplicate 2
-  { title: "Ascendia Agency", link: "https://ascendiacreative.vercel.app", thumbnail: "/ascendia.jpg" },
-  { title: "Laporan Warga App", link: "https://github.com/andreasivan636/laporan-warga-surabaya", thumbnail: "/laporan.jpg" },
-  { title: "Fore Coffee UI", link: "https://fore-redesign.vercel.app", thumbnail: "/fore.jpg" },
-  { title: "Cupang Ndasmu Catalog", link: "https://dreas30.github.io/Produk-Cupang-Ndasmu/", thumbnail: "/logocupangndasmu.jpg" },
-  { title: "iPhone 3D Experience", link: "https://iphone13-showcase.vercel.app", thumbnail: "/iphone.jpg" },
-];
+// --- DATA GAMBAR UNTUK 3D MARQUEE ---
+// Trik Senior: Kita suruh mesin Javascript menggandakan 5 gambar ini sebanyak 10 KALI LIPAT secara otomatis (Total 50 gambar)!
+const marqueeImages = Array(10).fill([
+  "/fore.jpg",
+  "/logocupangndasmu.jpg",
+  "/laporan.jpg",
+  "/iphone.jpg",
+  "/ascendia.jpg"
+]).flat();
 
 // --- DATA FLOATING DOCK ---
 const dockItems = [
-  {
-    title: "Home",
-    icon: <IconHome className="h-full w-full text-slate-300" />,
-    href: "#",
-  },
-  {
-    title: "Projects",
-    icon: <IconBriefcase className="h-full w-full text-slate-300" />,
-    href: "#portfolio",
-  },
-  {
-    title: "GitHub",
-    icon: <IconBrandGithub className="h-full w-full text-slate-300" />,
-    href: "https://github.com/andreasivan636",
-  },
-  {
-    title: "Email",
-    icon: <IconMail className="h-full w-full text-slate-300" />,
-    href: "mailto:andreasivang3447@gmail.com",
-  },
+  { title: "Home", icon: <IconHome className="h-full w-full text-slate-300" />, href: "#" },
+  { title: "Projects", icon: <IconBriefcase className="h-full w-full text-slate-300" />, href: "#portfolio" },
+  { title: "GitHub", icon: <IconBrandGithub className="h-full w-full text-slate-300" />, href: "https://github.com/andreasivan636" },
+  { title: "Email", icon: <IconMail className="h-full w-full text-slate-300" />, href: "mailto:andreasivang3447@gmail.com" },
 ];
 
 export default function Home() {
@@ -111,7 +87,7 @@ export default function Home() {
             </motion.a>
           </motion.div>
 
-          {/* BAGIAN KANAN: FOTO PROFIL DENGAN EFEK 3D TILT */}
+          {/* FOTO PROFIL (3D Card Effect) */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -121,12 +97,7 @@ export default function Home() {
             <CardContainer className="inter-var">
               <CardBody className="relative group/card w-64 h-64 md:w-[350px] md:h-[350px] rounded-full overflow-hidden border-4 border-blue-500/30 shadow-[0_0_40px_rgba(59,130,246,0.3)] bg-slate-900 p-0">
                 <CardItem translateZ="50" className="w-full h-full relative">
-                  <Image
-                    src="/profile.jpg"
-                    alt="Andreas Ivan"
-                    fill
-                    className="object-cover group-hover/card:scale-110 transition-transform duration-500"
-                  />
+                  <Image src="/profile.jpg" alt="Andreas Ivan" fill className="object-cover group-hover/card:scale-110 transition-transform duration-500" />
                 </CardItem>
               </CardBody>
             </CardContainer>
@@ -135,13 +106,37 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- PORTFOLIO SECTION (PARALLAX ACETERNITY) --- */}
-      <section id="portfolio" className="w-full">
-        <HeroParallax products={parallaxProducts} />
+      {/* --- PORTFOLIO SECTION KOMBO --- */}
+      <section id="portfolio" className="py-24 w-full bg-slate-950 relative z-10 border-t border-slate-900 overflow-hidden">
+
+        {/* BAGIAN 1: 3D MARQUEE (Visual Teaser) */}
+        <div className="container mx-auto max-w-6xl px-6 mb-8 text-center md:text-left">
+          <h2 className="text-4xl font-bold mb-4">Karya Terbaik Saya</h2>
+          <p className="text-slate-400 max-w-2xl">
+            Kumpulan cuplikan antarmuka dari proyek yang saya bangun menggunakan teknologi terbaru.
+          </p>
+        </div>
+
+        <div className="relative flex w-full flex-col items-center justify-center overflow-hidden mb-24">
+          <ThreeDMarquee images={marqueeImages} />
+        </div>
+
+        {/* BAGIAN 2: EXPANDABLE CARDS (Detail & Klik) */}
+        <div className="container mx-auto max-w-6xl px-6 mb-8 text-center md:text-left">
+          <h3 className="text-2xl font-bold mb-4 text-blue-400">Detail Proyek</h3>
+          <p className="text-slate-400 max-w-2xl mb-8">
+            Klik pada setiap proyek di bawah ini untuk membaca penjelasan teknis dan mengunjungi websitenya secara langsung.
+          </p>
+        </div>
+
+        <div className="w-full max-w-5xl mx-auto px-4 md:px-0">
+          <ExpandableCardDemo />
+        </div>
+
       </section>
 
       {/* --- FOOTER --- */}
-      <footer className="pt-12 pb-32 bg-slate-950 border-t border-slate-900 text-center relative z-10 mt-20">
+      <footer className="pt-24 pb-32 bg-slate-950 text-center relative z-10">
         <p className="text-slate-500 mb-3">Tertarik berkolaborasi?</p>
         <a href="mailto:andreasivang3447@gmail.com" className="text-2xl font-bold text-white hover:text-blue-400 transition-colors">
           andreasivang3447@gmail.com
