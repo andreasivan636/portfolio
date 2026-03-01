@@ -16,8 +16,7 @@ import {
 } from "@tabler/icons-react";
 
 // --- DATA GAMBAR UNTUK 3D MARQUEE ---
-// Trik Senior: Kita suruh mesin Javascript menggandakan 5 gambar ini sebanyak 10 KALI LIPAT secara otomatis (Total 50 gambar)!
-const marqueeImages = Array(10).fill([
+const marqueeImages = Array(30).fill([
   "/fore.jpg",
   "/logocupangndasmu.jpg",
   "/laporan.jpg",
