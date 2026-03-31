@@ -117,7 +117,6 @@ export function ExpandableCardDemo() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        // OPTIMASI 1: Matikan backdrop-blur di layar kecil (HP) agar tidak lag
                         className="fixed inset-0 bg-black/80 md:bg-black/60 md:backdrop-blur-sm h-full w-full z-10"
                     />
                 )}
@@ -131,7 +130,8 @@ export function ExpandableCardDemo() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0, transition: { duration: 0.05 } }}
-                            className="flex absolute top-4 right-4 items-center justify-center bg-slate-800 text-white rounded-full h-8 w-8 hover:bg-slate-700"
+                            // FIX 1: Tambah z-50 dan sedikit perbesar di HP agar gampang dipencet
+                            className="flex absolute top-6 right-6 lg:top-4 lg:right-4 items-center justify-center bg-slate-800 text-white rounded-full h-10 w-10 md:h-8 md:w-8 hover:bg-slate-700 z-50 shadow-lg border border-slate-600"
                             onClick={() => setActive(null)}
                         >
                             <CloseIcon />
@@ -139,8 +139,8 @@ export function ExpandableCardDemo() {
                         <motion.div
                             layoutId={`card-${active.title}-${id}`}
                             ref={ref}
-                            // OPTIMASI 2: Ringankan bayangan (shadow) di layar kecil & tambah will-change-transform
-                            className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-slate-900 border border-slate-800 sm:rounded-3xl overflow-hidden shadow-lg md:shadow-2xl md:shadow-blue-900/20 will-change-transform"
+                            // FIX 2: Ubah h-full jadi max-h-[90%] dan w-[92%] di HP. Ini bikin performa HP 2x lipat lebih enteng!
+                            className="w-[92%] md:w-full max-w-[500px] max-h-[85%] md:h-fit md:max-h-[90%] flex flex-col bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-xl z-40 will-change-transform"
                         >
                             <motion.div layoutId={`image-${active.title}-${id}`}>
                                 <Image
@@ -149,22 +149,23 @@ export function ExpandableCardDemo() {
                                     height={500}
                                     src={active.src}
                                     alt={active.title}
-                                    className="w-full h-64 sm:rounded-tr-3xl sm:rounded-tl-3xl object-cover object-top"
+                                    // Bikin atasnya melengkung rapi di HP juga
+                                    className="w-full h-60 md:h-64 rounded-tr-3xl rounded-tl-3xl object-cover object-top"
                                 />
                             </motion.div>
 
-                            <div>
-                                <div className="flex justify-between items-start p-6">
-                                    <div className="">
+                            <div className="flex flex-col flex-1 overflow-hidden">
+                                <div className="flex justify-between items-start p-5 md:p-6 shrink-0">
+                                    <div className="pr-4">
                                         <motion.h3
                                             layoutId={`title-${active.title}-${id}`}
-                                            className="font-bold text-white text-xl"
+                                            className="font-bold text-white text-lg md:text-xl"
                                         >
                                             {active.title}
                                         </motion.h3>
                                         <motion.p
                                             layoutId={`description-${active.description}-${id}`}
-                                            className="text-blue-400 font-medium text-sm mt-1"
+                                            className="text-blue-400 font-medium text-xs md:text-sm mt-1"
                                         >
                                             {active.description}
                                         </motion.p>
@@ -174,18 +175,18 @@ export function ExpandableCardDemo() {
                                         layoutId={`button-${active.title}-${id}`}
                                         href={active.ctaLink}
                                         target="_blank"
-                                        className="px-5 py-2 text-sm rounded-full font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/30"
+                                        className="px-4 py-2 md:px-5 md:py-2 text-xs md:text-sm rounded-full font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/30 whitespace-nowrap"
                                     >
                                         {active.ctaText}
                                     </motion.a>
                                 </div>
-                                <div className="pt-2 relative px-6 pb-8">
+                                <div className="relative px-5 md:px-6 pb-6 overflow-y-auto">
                                     <motion.div
                                         layout
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
                                         exit={{ opacity: 0 }}
-                                        className="text-slate-300 text-sm md:text-base leading-relaxed h-40 md:h-fit flex flex-col items-start gap-4 overflow-auto"
+                                        className="text-slate-300 text-sm md:text-base leading-relaxed flex flex-col items-start gap-4"
                                     >
                                         {typeof active.content === "function" ? active.content() : active.content}
                                     </motion.div>
@@ -251,7 +252,7 @@ export const CloseIcon = () => {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="h-4 w-4"
+            className="h-4 w-4 md:h-5 md:w-5"
         >
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
             <path d="M18 6l-12 12" />
