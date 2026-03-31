@@ -76,9 +76,19 @@ const cards = [
             return <p>Platform jasa pembuatan website digital profesional. Proyek ini bertujuan untuk membantu branding dan digitalisasi bisnis UMKM.</p>;
         },
     },
+    {
+        description: "E-Commerce",
+        title: "Treadix",
+        src: "/treadix.jpg",
+        ctaText: "Lihat Web",
+        ctaLink: "https://treadix.vercel.app",
+        content: () => {
+            return <p>Website e-commerce sepatu modern dengan desain hero section interaktif dan responsif.</p>
+        },
+    },
 ];
 
-// --- 3. MESIN UTAMA EXPANDABLE CARDS (Ini yang hilang sebelumnya) ---
+// --- 3. MESIN UTAMA EXPANDABLE CARDS ---
 export function ExpandableCardDemo() {
     const [active, setActive] = useState<(typeof cards)[number] | boolean | null>(null);
     const ref = useRef<HTMLDivElement>(null);
@@ -107,7 +117,8 @@ export function ExpandableCardDemo() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm h-full w-full z-10"
+                        // OPTIMASI 1: Matikan backdrop-blur di layar kecil (HP) agar tidak lag
+                        className="fixed inset-0 bg-black/80 md:bg-black/60 md:backdrop-blur-sm h-full w-full z-10"
                     />
                 )}
             </AnimatePresence>
@@ -128,7 +139,8 @@ export function ExpandableCardDemo() {
                         <motion.div
                             layoutId={`card-${active.title}-${id}`}
                             ref={ref}
-                            className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-slate-900 border border-slate-800 sm:rounded-3xl overflow-hidden shadow-2xl shadow-blue-900/20"
+                            // OPTIMASI 2: Ringankan bayangan (shadow) di layar kecil & tambah will-change-transform
+                            className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-slate-900 border border-slate-800 sm:rounded-3xl overflow-hidden shadow-lg md:shadow-2xl md:shadow-blue-900/20 will-change-transform"
                         >
                             <motion.div layoutId={`image-${active.title}-${id}`}>
                                 <Image

@@ -20,7 +20,8 @@ const marqueeImages = Array(10).fill([
   "/logocupangndasmu.jpg",
   "/laporan.jpg",
   "/iphone.jpg",
-  "/ascendia.jpg"
+  "/ascendia.jpg",
+  "/treadix.jpg"
 ]).flat();
 
 // --- DATA FLOATING DOCK ---
