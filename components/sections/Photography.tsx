@@ -1,39 +1,59 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
-// ─── Photography placeholder data ──────────────────────────────────────────
-// Replace these src values with actual photography file paths when available.
+// ─── Gallery item type ─────────────────────────────────────────────────────
 
-interface Photo {
+interface GalleryItem {
   src: string;
-  alt: string;
-  caption?: string;
+  title: string;
+  category: string;
 }
 
-const photos: Photo[] = [
-  { src: "/fore.jpg",            alt: "Photography 1", caption: "Available Light" },
-  { src: "/ascendia.jpg",        alt: "Photography 2", caption: "Urban Geometry" },
-  { src: "/treadix.jpg",         alt: "Photography 3", caption: "Texture Study" },
-  { src: "/logocupangndasmu.jpg",alt: "Photography 4", caption: "Still Life" },
-  { src: "/laporan.jpg",         alt: "Photography 5", caption: "Documentary" },
-  { src: "/iphone.jpg",          alt: "Photography 6", caption: "Product" },
+// ─── Gallery data ──────────────────────────────────────────────────────────
+
+const galleryItems: GalleryItem[] = [
+  {
+    src: "/galery/apple-academy.png",
+    title: "Apple Developer Academy Event (WWDC26 Stories)",
+    category: "Community & Milestone",
+  },
+  {
+    src: "/galery/google-event.jpg",
+    title: "Google Community Gathering",
+    category: "Tech Milestone",
+  },
+  {
+    src: "/galery/behind-the-scene.jpg",
+    title: "Production & Tech Setup",
+    category: "Behind the Scenes",
+  },
+  {
+    src: "/galery/behind-the-scene2.jpg",
+    title: "Content & Media Capture",
+    category: "Behind the Scenes",
+  },
+  {
+    src: "/galery/behind-the-scene3.jpg",
+    title: "Workspace & Development Session",
+    category: "Behind the Scenes",
+  },
 ];
-
-// ─── Masonry-ish column split ─────────────────────────────────────────────
-
-function splitIntoColumns<T>(arr: T[], cols: number): T[][] {
-  return Array.from({ length: cols }, (_, i) =>
-    arr.filter((_, idx) => idx % cols === i),
-  );
-}
 
 // ─── Component ────────────────────────────────────────────────────────────
 
 export default function Photography() {
-  const columns = splitIntoColumns(photos, 3);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const scroll = (direction: "left" | "right") => {
+    scrollRef.current?.scrollBy({
+      left: direction === "left" ? -460 : 460,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <section
@@ -51,13 +71,13 @@ export default function Photography() {
           className="mb-6"
         >
           <p className="text-xs font-medium tracking-[0.2em] uppercase text-zinc-400 dark:text-zinc-500 mb-4">
-            Photography
+            Beyond the Code
           </p>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-              Light, Composition,
+              Journey &amp;
               <br />
-              Moment.
+              Milestones.
             </h2>
             <motion.p
               initial={{ opacity: 0, y: 14 }}
@@ -66,9 +86,7 @@ export default function Photography() {
               transition={{ duration: 0.8, ease: "easeOut", delay: 0.12 }}
               className="text-sm text-zinc-500 dark:text-zinc-400 max-w-xs leading-relaxed"
             >
-              Photography informs how I design. Reading light, constructing
-              frames, and isolating what matters translates directly into
-              visual hierarchy and spatial thinking on screen.
+              Tech events, community building, and moments in action.
             </motion.p>
           </div>
         </motion.div>
@@ -83,57 +101,95 @@ export default function Photography() {
           className="w-full h-px bg-zinc-200 dark:bg-zinc-800 mb-12"
         />
 
-        {/* Masonry grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
-          {columns.map((col, colIdx) => (
-            <div key={colIdx} className="flex flex-col gap-4">
-              {col.map((photo, photoIdx) => (
-                <motion.div
-                  key={photo.src + photoIdx}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{
-                    duration: 0.7,
-                    ease: "easeOut",
-                    delay: colIdx * 0.1 + photoIdx * 0.06,
-                  }}
-                  className="group relative overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900"
-                >
-                  <div
-                    className={`relative w-full ${
-                      (colIdx + photoIdx) % 3 === 0
-                        ? "aspect-[4/5]"
-                        : (colIdx + photoIdx) % 3 === 1
-                          ? "aspect-[4/3]"
-                          : "aspect-square"
-                    }`}
-                  >
-                    <Image
-                      src={photo.src}
-                      alt={photo.alt}
-                      fill
-                      className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-                    />
-                    {/* Caption overlay */}
-                    {photo.caption && (
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
-                        <span className="text-white text-xs font-medium tracking-wide">
-                          {photo.caption}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          ))}
-        </div>
+        {/* Horizontal scroll gallery */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+        >
+          {/* Navigation arrows — top-right */}
+          <div className="flex items-center justify-end gap-2 mb-4">
+            <button
+              onClick={() => scroll("left")}
+              aria-label="Scroll left"
+              className="group/btn flex items-center justify-center w-10 h-10 rounded-full border border-zinc-300 dark:border-zinc-700 bg-transparent hover:border-zinc-500 dark:hover:border-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-all duration-200"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-zinc-400 dark:text-zinc-500 group-hover/btn:text-zinc-700 dark:group-hover/btn:text-zinc-300 transition-colors"
+              >
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+            <button
+              onClick={() => scroll("right")}
+              aria-label="Scroll right"
+              className="group/btn flex items-center justify-center w-10 h-10 rounded-full border border-zinc-300 dark:border-zinc-700 bg-transparent hover:border-zinc-500 dark:hover:border-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-all duration-200"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-zinc-400 dark:text-zinc-500 group-hover/btn:text-zinc-700 dark:group-hover/btn:text-zinc-300 transition-colors"
+              >
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </button>
+          </div>
 
-        {/* Note about placeholders */}
-        <p className="mt-8 text-xs text-zinc-400 dark:text-zinc-600 text-center">
-          Photography gallery — replace placeholder images with your own shots when ready.
-        </p>
+          {/* Scroll container */}
+          <div
+            ref={scrollRef}
+            className={cn(
+              "flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8",
+              "[&::-webkit-scrollbar]:hidden",
+              "[-ms-overflow-style:none]",
+              "[scrollbar-width:none]",
+            )}
+          >
+            {galleryItems.map((item) => (
+              <div
+                key={item.src}
+                className="w-[85vw] sm:w-[450px] shrink-0 snap-start group relative overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors duration-300"
+              >
+                {/* Image container — fixed height, no cropping */}
+                <div className="relative w-full h-[400px] bg-zinc-100 dark:bg-zinc-900/30 flex items-center justify-center">
+                  <Image
+                    src={item.src}
+                    alt={item.title}
+                    fill
+                    className="object-contain transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                  />
+                </div>
+
+                {/* Caption */}
+                <div className="px-4 py-3.5">
+                  <p className="text-xs text-zinc-400 dark:text-zinc-500 font-medium tracking-wide mb-1">
+                    {item.category}
+                  </p>
+                  <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-200 leading-snug">
+                    {item.title}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
 
       </div>
     </section>

@@ -161,6 +161,12 @@ export const posterItems: PosterItem[] = [
     category: "Layout & Typography",
     aspect: "poster",
   },
+  {
+    src: "/17-ags.png",
+    title: "Independence Day Poster",
+    category: "Graphic Design",
+    aspect: "poster",
+  },
 ];
 
 // --- CARD COMPONENT (reusable for both tabs) ---

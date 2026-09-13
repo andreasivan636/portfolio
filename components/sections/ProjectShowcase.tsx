@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { ThreeDMarquee } from "@/components/ui/3d-marquee";
@@ -46,44 +46,104 @@ const tabs: { id: TabId; label: string; sub: string }[] = [
 // ─── Poster Grid ───────────────────────────────────────────────────────────
 
 function PosterGrid({ items }: { items: PosterItem[] }) {
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-      {items.map((item, idx) => (
-        <motion.div
-          key={item.src}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.7, ease: "easeOut", delay: idx * 0.08 }}
-          className="group relative overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors duration-300"
-        >
-          {/* Image */}
-          <div
-            className={cn(
-              "relative w-full overflow-hidden",
-              item.aspect === "poster" ? "aspect-[4/5]" : "aspect-video",
-            )}
-          >
-            <Image
-              src={item.src}
-              alt={item.title}
-              fill
-              className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-            />
-          </div>
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-          {/* Caption */}
-          <div className="px-4 py-3.5">
-            <p className="text-xs text-zinc-400 dark:text-zinc-500 font-medium tracking-wide mb-1">
-              {item.category}
-            </p>
-            <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-200 leading-snug">
-              {item.title}
-            </p>
+  const scroll = (direction: "left" | "right") => {
+    scrollRef.current?.scrollBy({
+      left: direction === "left" ? -460 : 460,
+      behavior: "smooth",
+    });
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+    >
+      {/* Navigation arrows — top-right */}
+      <div className="flex items-center justify-end gap-2 mb-4">
+        <button
+          onClick={() => scroll("left")}
+          aria-label="Scroll left"
+          className="group/btn flex items-center justify-center w-10 h-10 rounded-full border border-zinc-300 dark:border-zinc-700 bg-transparent hover:border-zinc-500 dark:hover:border-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-all duration-200"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-zinc-400 dark:text-zinc-500 group-hover/btn:text-zinc-700 dark:group-hover/btn:text-zinc-300 transition-colors"
+          >
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </button>
+        <button
+          onClick={() => scroll("right")}
+          aria-label="Scroll right"
+          className="group/btn flex items-center justify-center w-10 h-10 rounded-full border border-zinc-300 dark:border-zinc-700 bg-transparent hover:border-zinc-500 dark:hover:border-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-all duration-200"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-zinc-400 dark:text-zinc-500 group-hover/btn:text-zinc-700 dark:group-hover/btn:text-zinc-300 transition-colors"
+          >
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Scroll container */}
+      <div
+        ref={scrollRef}
+        className={cn(
+          "flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8",
+          "[&::-webkit-scrollbar]:hidden",
+          "[-ms-overflow-style:none]",
+          "[scrollbar-width:none]",
+        )}
+      >
+        {items.map((item) => (
+          <div
+            key={item.src}
+            className="w-[85vw] sm:w-[450px] shrink-0 snap-start group relative overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors duration-300"
+          >
+            {/* Image container — fixed height, no cropping */}
+            <div className="relative w-full h-[500px] bg-zinc-100 dark:bg-zinc-900/30 flex items-center justify-center">
+              <Image
+                src={item.src}
+                alt={item.title}
+                fill
+                className="object-contain transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+              />
+            </div>
+
+            {/* Caption */}
+            <div className="px-4 py-3.5">
+              <p className="text-xs text-zinc-400 dark:text-zinc-500 font-medium tracking-wide mb-1">
+                {item.category}
+              </p>
+              <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-200 leading-snug">
+                {item.title}
+              </p>
+            </div>
           </div>
-        </motion.div>
-      ))}
-    </div>
+        ))}
+      </div>
+    </motion.div>
   );
 }
 
