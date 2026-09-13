@@ -1,13 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { ThreeDMarquee } from "@/components/ui/3d-marquee";
 import {
   ExpandableCardList,
   webDevCards,
-  designCards,
+  posterItems,
 } from "@/components/ui/expandable-cards";
+import type { PosterItem } from "@/components/ui/expandable-cards";
 import { cn } from "@/lib/utils";
 
 // ─── Marquee images (web project images only) ──────────────────────────────
@@ -20,6 +22,7 @@ const marqueeImages = Array(8)
     "/iphone.jpg",
     "/ascendia.jpg",
     "/treadix.jpg",
+    "/weding.jpg",
   ])
   .flat();
 
@@ -36,9 +39,53 @@ const tabs: { id: TabId; label: string; sub: string }[] = [
   {
     id: "design",
     label: "UI/UX & Graphic Design",
-    sub: "Interface design, brand identity, and visual systems",
+    sub: "Posters, brand identity, and visual systems",
   },
 ];
+
+// ─── Poster Grid ───────────────────────────────────────────────────────────
+
+function PosterGrid({ items }: { items: PosterItem[] }) {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+      {items.map((item, idx) => (
+        <motion.div
+          key={item.src}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.7, ease: "easeOut", delay: idx * 0.08 }}
+          className="group relative overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors duration-300"
+        >
+          {/* Image */}
+          <div
+            className={cn(
+              "relative w-full overflow-hidden",
+              item.aspect === "poster" ? "aspect-[4/5]" : "aspect-video",
+            )}
+          >
+            <Image
+              src={item.src}
+              alt={item.title}
+              fill
+              className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+            />
+          </div>
+
+          {/* Caption */}
+          <div className="px-4 py-3.5">
+            <p className="text-xs text-zinc-400 dark:text-zinc-500 font-medium tracking-wide mb-1">
+              {item.category}
+            </p>
+            <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-200 leading-snug">
+              {item.title}
+            </p>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
 
 // ─── Component ─────────────────────────────────────────────────────────────
 
@@ -135,15 +182,13 @@ export default function ProjectShowcase() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] }}
             role="tabpanel"
             id={`panel-${activeTab}`}
             aria-labelledby={`tab-${activeTab}`}
           >
             {activeTab === "web" && <ExpandableCardList cards={webDevCards} />}
-            {activeTab === "design" && (
-              <ExpandableCardList cards={designCards} />
-            )}
+            {activeTab === "design" && <PosterGrid items={posterItems} />}
           </motion.div>
         </AnimatePresence>
 

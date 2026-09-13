@@ -113,48 +113,53 @@ export const webDevCards: ProjectCard[] = [
       </p>
     ),
   },
+  {
+    description: "Wedding / Interactive",
+    title: "Digital Wedding Invitation",
+    src: "/weding.jpg",
+    ctaText: "Visit Site",
+    ctaLink: "https://wedding-invitation-azure-nine.vercel.app/",
+    content: () => (
+      <p>
+        An interactive digital wedding invitation with custom animations and
+        dynamic RSVP handling. Built for elegance and mobile-first responsiveness.
+      </p>
+    ),
+  },
 ];
 
-// --- DESIGN PROJECTS (UI/UX & Graphic Design) ---
-export const designCards: ProjectCard[] = [
+// --- POSTER / DESIGN ITEMS (for poster grid) ---
+export interface PosterItem {
+  src: string;
+  title: string;
+  category: string;
+  aspect: "poster" | "landscape";
+}
+
+export const posterItems: PosterItem[] = [
   {
-    description: "UI Design / Figma",
-    title: "Fore Coffee — UI Screens",
-    src: "/fore.jpg",
-    ctaText: "View Design",
-    ctaLink: "https://fore-redesign.vercel.app",
-    content: () => (
-      <p>
-        Full set of UI screens designed in Figma prior to development. Covers
-        onboarding, product pages, and checkout flow with a luxury brand system.
-      </p>
-    ),
+    src: "/1.png",
+    title: "Business Promotion Poster",
+    category: "Poster Design",
+    aspect: "poster",
   },
   {
-    description: "Graphic Design / Canva",
-    title: "Ascendia Brand Identity",
-    src: "/ascendia.jpg",
-    ctaText: "View Work",
-    ctaLink: "https://ascendiacreative.vercel.app",
-    content: () => (
-      <p>
-        Brand identity design including logo, colour palette, and marketing
-        collateral for Ascendia Creative, built in Canva and Illustrator.
-      </p>
-    ),
+    src: "/5.png",
+    title: "Website Showcase Graphic",
+    category: "Digital Design",
+    aspect: "landscape",
   },
   {
-    description: "Poster Design / Illustrator",
-    title: "Treadix Visual Campaign",
-    src: "/treadix.jpg",
-    ctaText: "View Work",
-    ctaLink: "https://treadix.vercel.app",
-    content: () => (
-      <p>
-        Print and digital poster campaign for the Treadix sneaker brand.
-        Typography-driven layout emphasising motion and energy.
-      </p>
-    ),
+    src: "/TIMNASDAY.png",
+    title: "Timnas Day Matchday Poster",
+    category: "Graphic Design",
+    aspect: "poster",
+  },
+  {
+    src: "/Cover depan.png",
+    title: "Publication Cover Design",
+    category: "Layout & Typography",
+    aspect: "poster",
   },
 ];
 
