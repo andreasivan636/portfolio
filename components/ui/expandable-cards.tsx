@@ -179,7 +179,7 @@ export const posterItems: PosterItem[] = [
     aspect: "poster",
   },
   {
-    src: "/Cover depan.png",
+    src: "/cover-depan.png",
     title: "Publication Cover Design",
     category: "Layout & Typography",
     aspect: "poster",
