@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 // --- OUTSIDE CLICK HOOK ---
 export const useOutsideClick = (
-  ref: React.RefObject<HTMLDivElement>,
+  ref: React.RefObject<HTMLDivElement | null>,
   callback: (event: MouseEvent | TouchEvent) => void
 ) => {
   useEffect(() => {
@@ -22,6 +22,29 @@ export const useOutsideClick = (
     };
   }, [ref, callback]);
 };
+
+// --- MOBILE DETECTION HOOK ---
+function subscribeMediaQuery(callback: () => void) {
+  const mql = window.matchMedia("(max-width: 767px)");
+  mql.addEventListener("change", callback);
+  return () => mql.removeEventListener("change", callback);
+}
+
+function getMobileSnapshot() {
+  return window.matchMedia("(max-width: 767px)").matches;
+}
+
+function getMobileServerSnapshot() {
+  return false;
+}
+
+function useIsMobile() {
+  return React.useSyncExternalStore(
+    subscribeMediaQuery,
+    getMobileSnapshot,
+    getMobileServerSnapshot
+  );
+}
 
 // --- CARD TYPE ---
 export interface ProjectCard {
@@ -178,6 +201,7 @@ export function ExpandableCardList({ cards }: CardListProps) {
   const [active, setActive] = useState<ProjectCard | null>(null);
   const ref = useRef<HTMLDivElement>(null!);
   const id = useId();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -202,7 +226,8 @@ export function ExpandableCardList({ cards }: CardListProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm h-full w-full z-10"
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 max-md:backdrop-blur-none max-md:bg-black/90 md:bg-black/50 md:backdrop-blur-sm h-full w-full z-10"
           />
         )}
       </AnimatePresence>
@@ -212,22 +237,42 @@ export function ExpandableCardList({ cards }: CardListProps) {
           <div className="fixed inset-0 grid place-items-center z-[100]">
             <motion.button
               key={`button-${active.title}-${id}`}
-              layout
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0, transition: { duration: 0.05 } }}
-              className="flex absolute top-6 right-6 lg:top-4 lg:right-4 items-center justify-center bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 rounded-full h-9 w-9 z-50 border border-zinc-200 dark:border-zinc-700"
+              exit={{ opacity: 0, transition: { duration: 0.1 } }}
+              className="flex absolute top-6 right-6 lg:top-4 lg:right-4 items-center justify-center bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 rounded-full h-9 w-9 z-50 border border-zinc-200 dark:border-zinc-700 cursor-pointer"
               onClick={() => setActive(null)}
+              aria-label="Close dialog"
             >
               <CloseIcon />
             </motion.button>
 
             <motion.div
-              layoutId={`card-${active.title}-${id}`}
+              layoutId={isMobile ? undefined : `card-${active.title}-${id}`}
               ref={ref}
-              className="w-[92%] md:w-full max-w-[500px] max-h-[85vh] md:h-fit flex flex-col bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-2xl z-40"
+              initial={
+                isMobile
+                  ? { opacity: 0, scale: 0.95, y: 20 }
+                  : { opacity: 0 }
+              }
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={
+                isMobile
+                  ? { opacity: 0, scale: 0.95, y: 20 }
+                  : { opacity: 0 }
+              }
+              transition={{ type: "tween", ease: "easeInOut", duration: 0.3 }}
+              className="w-[92%] md:w-full max-w-[500px] max-h-[85vh] md:h-fit flex flex-col bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-2xl z-40 transform-gpu will-change-[transform,opacity]"
             >
-              <motion.div layoutId={`image-${active.title}-${id}`}>
+              <motion.div
+                layoutId={isMobile ? undefined : `image-${active.title}-${id}`}
+                initial={isMobile ? { opacity: 0 } : undefined}
+                animate={isMobile ? { opacity: 1 } : undefined}
+                transition={{
+                  duration: isMobile ? 0.25 : 0.3,
+                  ease: "easeInOut",
+                }}
+              >
                 <Image
                   priority
                   width={500}
@@ -242,25 +287,48 @@ export function ExpandableCardList({ cards }: CardListProps) {
                 <div className="flex justify-between items-start p-5 md:p-6 shrink-0">
                   <div className="pr-4">
                     <motion.h3
-                      layoutId={`title-${active.title}-${id}`}
+                      layoutId={
+                        isMobile ? undefined : `title-${active.title}-${id}`
+                      }
                       className="font-semibold text-zinc-900 dark:text-zinc-100 text-lg"
+                      transition={{
+                        type: "tween",
+                        ease: "easeInOut",
+                        duration: 0.3,
+                      }}
                     >
                       {active.title}
                     </motion.h3>
                     <motion.p
-                      layoutId={`description-${active.description}-${id}`}
+                      layoutId={
+                        isMobile
+                          ? undefined
+                          : `description-${active.description}-${id}`
+                      }
                       className="text-zinc-400 text-xs mt-1 font-medium tracking-wide"
+                      transition={{
+                        type: "tween",
+                        ease: "easeInOut",
+                        duration: 0.3,
+                      }}
                     >
                       {active.description}
                     </motion.p>
                   </div>
 
                   <motion.a
-                    layoutId={`button-${active.title}-${id}`}
+                    layoutId={
+                      isMobile ? undefined : `button-${active.title}-${id}`
+                    }
                     href={active.ctaLink}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-4 py-2 text-xs rounded-full font-semibold bg-zinc-900 hover:bg-zinc-700 dark:bg-zinc-100 dark:hover:bg-zinc-300 text-white dark:text-zinc-900 transition-colors whitespace-nowrap"
+                    transition={{
+                      type: "tween",
+                      ease: "easeInOut",
+                      duration: 0.3,
+                    }}
                   >
                     {active.ctaText}
                   </motion.a>
@@ -268,10 +336,10 @@ export function ExpandableCardList({ cards }: CardListProps) {
 
                 <div className="relative px-5 md:px-6 pb-6 overflow-y-auto">
                   <motion.div
-                    layout
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
                     className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed"
                   >
                     {typeof active.content === "function"
@@ -288,14 +356,16 @@ export function ExpandableCardList({ cards }: CardListProps) {
       <ul className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
         {cards.map((card) => (
           <motion.li
-            layoutId={`card-${card.title}-${id}`}
+            layoutId={isMobile ? undefined : `card-${card.title}-${id}`}
             key={card.title}
             onClick={() => setActive(card)}
             className="p-4 flex flex-col md:flex-row items-center gap-5 bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 rounded-2xl cursor-pointer transition-colors group"
+            transition={{ type: "tween", ease: "easeInOut", duration: 0.3 }}
           >
             <motion.div
-              layoutId={`image-${card.title}-${id}`}
+              layoutId={isMobile ? undefined : `image-${card.title}-${id}`}
               className="w-full md:w-36 shrink-0"
+              transition={{ type: "tween", ease: "easeInOut", duration: 0.3 }}
             >
               <Image
                 width={200}
@@ -308,14 +378,20 @@ export function ExpandableCardList({ cards }: CardListProps) {
 
             <div className="flex flex-col justify-center items-center md:items-start text-center md:text-left w-full">
               <motion.p
-                layoutId={`description-${card.description}-${id}`}
+                layoutId={
+                  isMobile
+                    ? undefined
+                    : `description-${card.description}-${id}`
+                }
                 className="text-zinc-400 text-xs mb-1.5 font-medium tracking-wide"
+                transition={{ type: "tween", ease: "easeInOut", duration: 0.3 }}
               >
                 {card.description}
               </motion.p>
               <motion.h3
-                layoutId={`title-${card.title}-${id}`}
+                layoutId={isMobile ? undefined : `title-${card.title}-${id}`}
                 className="font-semibold text-zinc-900 dark:text-zinc-100 text-base mb-3"
+                transition={{ type: "tween", ease: "easeInOut", duration: 0.3 }}
               >
                 {card.title}
               </motion.h3>
